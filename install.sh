@@ -31,8 +31,8 @@ cp -ru "$REPO_DIR/themes/"* "$THEMES_DIR/"
 # 3. Handle Configuration (Do NOT overwrite existing user configs)
 if [[ ! -f "$CONFIG_DIR/config.yaml" ]]; then
   echo "-> No existing config found. Provisioning default config..."
-  if [[ -f "$REPO_DIR/config/config.yaml.example" ]]; then
-    cp "$REPO_DIR/config/config.yaml.example" "$CONFIG_DIR/config.yaml"
+  if [[ -f "$REPO_DIR/config/config.yaml" ]]; then
+    cp "$REPO_DIR/config/config.yaml" "$CONFIG_DIR/config.yaml"
   else
     echo "---" >"$CONFIG_DIR/config.yaml"
   fi

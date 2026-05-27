@@ -17,9 +17,7 @@
 ## Proposed Refactorings
 
 1. Core Architecture:
-   Menus::Base Introduce a base class to encapsulate the common "fetch -> select
-   -> act" pattern. This will reduce boilerplate in each menu file by about
-   60-70%.
+   Menus::Base Introduce a base class to encapsulate the common "fetch -> select -> act" pattern. This will reduce boilerplate in each menu file by about 60-70%.
 
 2. Specialized Menu Handlers Create standard handlers for common actions:
    - CommandMenu: For menus that simply execute a system command (e.g., Browser,
@@ -28,7 +26,7 @@
    - SubMenu: For menus that navigate to other menu classes.
 
 3. Standardize Navigator
-   Move the Navigator class from launcher_helper.rb into
+   Move the Navigator class from `hyperion.rb` into
    lib/hyperion/navigator.rb to keep the entry point clean and make the
    navigation logic more robust.
 
@@ -55,7 +53,7 @@ Here are two ways to solve the "injection in sub-menus" problem:
 
 1. The Coordinator (Router) Pattern In this approach, menus never return a class
    or instance. They return a Symbol or a Command Object representing where they
-   want to go. The main loop in launcher_helper.rb then acts as a "Router."
+   want to go. The main loop in `hyperion.rb` then acts as a "Router."
 
 How it would look in Main:
 
@@ -71,7 +69,7 @@ How it would look in Main:
 
 10 end
 
-How it works in launcher_helper.rb: The launcher maintains a MenuFactory that
+How it works in `hyperion.rb`: The launcher maintains a MenuFactory that
 knows how to build any menu by its key.
 
      # The central loop
@@ -176,7 +174,7 @@ Here is how the decoupling would work while preserving your escape/back logic:
            end
          end
 
-1. Updating Navigator in launcher_helper.rb The Navigator remains almost the
+1. Updating Navigator in `hyperion.rb` The Navigator remains almost the
     same, but it stores Route Symbols (like :main or :system) on its stack
     instead of Classes. This allows it to use the factory to inject dependencies
     every time a menu is shown.
@@ -249,7 +247,7 @@ Key Improvements:
 
 1. No const_get: You no longer need to translate strings to classes inside your
    menus.
-2. Safety: launcher_helper.rb no longer does const_get on ARGV[0], which is a
+2. Safety: `hyperion.rb` no longer does const_get on ARGV[0], which is a
    security and stability improvement.
 3. Testability: You can now test your menus by passing in a simple array of
    options and a mock UI, without ever launching Rofi or loading your full YAML

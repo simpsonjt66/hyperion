@@ -17,11 +17,14 @@ module Menus
       handle_selection(selected)
     end
 
-    private
+    protected
 
-    def handle_selection(selected)
-      # To be implemented by subclasses
-      { action: :exit }
+    def find_option(selected)
+      @options.find { |item| item[:prompt] == selected }
+    end
+
+    def handle_selection(_selected)
+      raise NotImplementedError, "#{self.class} must implement handle_selection"
     end
   end
 end

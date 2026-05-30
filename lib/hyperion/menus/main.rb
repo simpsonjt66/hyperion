@@ -2,16 +2,9 @@
 
 module Menus
   # Main menu class
-  class Main
-    def self.show
-      menu_options = OPTIONS[:main_menu]
-      prompts = menu_options.map { |item| item[:prompt] }
-      selected = Utilities.rofi_select(items: prompts)
-
-      return { action: :exit } if selected.nil?
-
-      launch_command = menu_options.find { |item| item[:prompt] == selected }&.dig(:command).to_s.capitalize
-      target = Menus.const_get(launch_command)
+  class Main < Base
+    def handle_selection(selected)
+      target = find_option(selected)&.dig(:command).to_s.downcase.to_sym
       { action: :push, target: target }
     end
   end

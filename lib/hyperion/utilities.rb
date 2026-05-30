@@ -41,6 +41,3 @@ module Utilities
     ]
   end
 end
-
-Dir.glob(File.join(__dir__, '{menus,utilities}', '*.rb'))
-   .sort.each { |f| require f }

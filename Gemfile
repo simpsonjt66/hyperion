@@ -10,3 +10,4 @@ gem 'rake', '~> 13.0'
 
 gem 'minitest', '~> 5.16'
 gem 'minitest-mock', '5.27'
+gem 'toml-rb', '4.2'

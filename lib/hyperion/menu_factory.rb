@@ -1,17 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'menus/apps'
-require_relative 'menus/browser'
-require_relative 'menus/config'
-require_relative 'menus/default'
-require_relative 'menus/editor'
-require_relative 'menus/font'
-require_relative 'menus/main'
-require_relative 'menus/package'
-require_relative 'menus/system'
-require_relative 'menus/terminal'
-require_relative 'menus/theme'
-
 module Hyperion
   # The MenuFactory is responsible for instantiating menu objects with their
   # required dependencies (options and view). This implements the Coordinator

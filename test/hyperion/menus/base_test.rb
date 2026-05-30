@@ -3,11 +3,18 @@ require 'test_helper'
 require 'hyperion/menus/base'
 require 'minitest/mock'
 
+# Mock class for testing Base
+class MockMenu < Menus::Base
+  def handle_selection(_selected)
+    { action: :exit }
+  end
+end
+
 describe 'Menus::Base' do
   let(:options) { [{ prompt: 'Test Option', command: 'test_cmd' }] }
   let(:mock_view) { Minitest::Mock.new }
 
-  let(:menu) { Menus::Base.new(options: options, view: mock_view) }
+  let(:menu) { MockMenu.new(options: options, view: mock_view) }
 
   it 'initializes with options and view' do
     mock_view.expect(:==, true, [mock_view])

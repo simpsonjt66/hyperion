@@ -2,17 +2,11 @@
 
 module Menus
   # Set the default terminal
-  class Editor
-    def self.show
-      menu_options = OPTIONS[:default_editor_menu]
-      prompts = menu_options.map { |item| item[:prompt] }
-      selected = Utilities.rofi_select(items: prompts)
-
-      return { action: :back } if selected.nil?
-
-      launch_command = menu_options.find { |item| item[:prompt] == selected }&.dig(:command)
-      system(launch_command)
-      { action: exit }
+  class Editor < Base
+    def handle_selection(selected)
+      launch_command = find_option(selected)&.dig(:command)
+      @view.execute(launch_command)
+      { action: :exit }
     end
   end
 end

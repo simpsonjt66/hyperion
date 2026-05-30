@@ -16,6 +16,8 @@ selection and provides a modular architecture for different configuration areas.
   `:back`, `:exit`).
 - **Style**: Adhere to standard Ruby conventions (snake_case, 2-space
   indentation).
+- **Execution**: Always use `bundle exec` (e.g., `bundle exec rake test`) to
+  ensure dependencies are correctly loaded.
 
 ## Current Refactoring Plan
 

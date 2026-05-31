@@ -14,6 +14,8 @@ require_relative 'hyperion/view/rofi_adapter'
 Dir.glob(File.join(__dir__, 'hyperion/utilities', '*.rb')).sort.each { |f| require f }
 
 require_relative 'hyperion/menus/base'
+require_relative 'hyperion/menus/launcher'
+require_relative 'hyperion/menus/push_menu'
 
 # Load all menus
 Dir.glob(File.join(__dir__, 'hyperion/menus', '*.rb')).sort.each { |f| require f }

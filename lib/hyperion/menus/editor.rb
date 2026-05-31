@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module Menus
-  # Set the default terminal
-  class Editor < Base
-    def handle_selection(selected)
-      launch_command = find_option(selected)&.dig(:command)
-      @view.execute(launch_command)
-      { action: :exit }
-    end
+  # Set the default editor
+  class Editor < Launcher
   end
 end

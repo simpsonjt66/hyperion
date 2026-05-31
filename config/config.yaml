@@ -49,9 +49,6 @@ config_menu:
     command: "/waybar/config.jsonc"
   - prompt: " Zsh"
     command: "/zsh/.zshrc"
-pkg_menu:
-  - prompt: "Install package"
-    command: "hyperion-pkg-install"
 default_menu:
   - prompt: " Terminal"
     command: "terminal"

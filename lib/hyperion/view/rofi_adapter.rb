@@ -2,19 +2,29 @@
 
 module Hyperion
   module View
+    # Adapter for rofi as system menu generator
     class RofiAdapter
       def initialize(config = {})
         @config = config
       end
 
-      # Standard interface used by all menus
       def select(items:, prompt: 'Select', current: nil)
-        # Delegating to existing logic in Utilities
         Utilities.rofi_select(
           items: items,
           prompt: prompt,
           current: current
         )
+      end
+
+      def drun
+        system('rofi', '-show',
+               'drun',
+               '-run-command', launcher,
+               '-theme', '~/.config/rofi/themes/app-launcher.rasi')
+      end
+
+      def launcher
+        'uwsm-app -- {cmd}'
       end
 
       def confirm(message)
@@ -23,10 +33,6 @@ module Hyperion
 
       def notify(message)
         system('notify-send', message)
-      end
-
-      def execute(command, *args)
-        system(command, *args)
       end
     end
   end

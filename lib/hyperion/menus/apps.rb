@@ -4,11 +4,7 @@ module Menus
   # Shows rofi in drun mode as an app launcher
   class Apps < Base
     def show
-      app_launcher = 'uwsm-app -- {cmd}'
-      @view.execute('rofi', '-show',
-                    'drun',
-                    '-run-command', app_launcher,
-                    '-theme', '~/.config/rofi/themes/app-launcher.rasi')
+      @view.drun
       { action: :back }
     end
   end

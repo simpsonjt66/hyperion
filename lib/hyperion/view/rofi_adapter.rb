@@ -52,6 +52,10 @@ module Hyperion
       def notify(message)
         system('notify-send', message)
       end
+
+      def execute(command, *args)
+        system(command, *args)
+      end
     end
   end
 end

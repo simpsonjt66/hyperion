@@ -6,7 +6,7 @@ module Utilities
     def self.get
       return unless File.exist?(current_theme_file)
 
-      File.read(File.join(current_theme_file)).chomp
+      File.read(current_theme_file).chomp
     end
 
     class << self

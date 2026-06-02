@@ -9,11 +9,29 @@ module Hyperion
       end
 
       def select(items:, prompt: 'Select', current: nil)
-        Utilities.rofi_select(
-          items: items,
-          prompt: prompt,
-          current: current
-        )
+        current_index = items.index(current) || 0
+
+        result = IO.popen(select_command(items, current_index, prompt), 'r+') do |io|
+          io.puts items
+          io.close_write
+          io.read.chomp
+        end
+
+        $CHILD_STATUS.success? && !result.empty? ? result : nil
+      end
+
+      def select_command(items, current_index, prompt)
+        longest = items.max_by(&:length)&.length || 0
+
+        [
+          'rofi',
+          '-dmenu',
+          '-p', prompt,
+          '-selected-row', current_index.to_s,
+          '-i', '-l', items.size.to_s,
+          '-theme', '~/.config/rofi/themes/system-menu.rasi',
+          '-theme-str', "window { width: #{longest}em;}"
+        ]
       end
 
       def drun
@@ -28,7 +46,7 @@ module Hyperion
       end
 
       def confirm(message)
-        Utilities.confirm_dialog(message)
+        system('confirm-dialog', '-m', message)
       end
 
       def notify(message)

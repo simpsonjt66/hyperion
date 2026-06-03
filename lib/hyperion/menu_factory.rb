@@ -17,6 +17,7 @@ module Hyperion
                terminal: { class: ::Menus::Terminal, options_key: :default_terminal_menu },
                apps: { class: ::Menus::Apps, options_key: nil },
                font: { class: ::Menus::Font, options_key: nil },
+               screenshot: { class: ::Menus::Screenshot, options_key: :screenshot_menu },
                theme: { class: ::Menus::Theme, options_key: nil } }.freeze
 
     # Builds a menu instance for the given route

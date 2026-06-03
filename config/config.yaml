@@ -78,3 +78,10 @@ package_menu:
     command: "hyperion-pkg-remove"
   - prompt: "Install AUR Package"
     command: "hyperion-pkg-aur-install"
+screenshot_menu:
+  - prompt: "Region"
+    command: "cmd-screenshot"
+  - prompt: "Window"
+    command: "cmd-screenshot window"
+  - prompt: "Display"
+    command: "cmd-screenshot output"

@@ -14,7 +14,7 @@ describe Hyperion::MenuFactory do
       default_menu: [{ prompt: 'Default Item' }],
       default_editor_menu: [{ prompt: 'Editor Item' }],
       default_browser_menu: [{ prompt: 'Browser Item' }],
-      default_terminal_menu: [{ prompt: 'Terminal Item' }]
+      default_screenshot_menu: [{ prompt: 'Screenshot Item' }]
     }
   end
   let(:mock_view) { Object.new }
@@ -91,7 +91,7 @@ describe Hyperion::MenuFactory do
     end
 
     it 'contains expected keys' do
-      expected_keys = %i[main system config package default editor browser terminal apps font theme]
+      expected_keys = %i[main system config package default editor browser screenshot terminal apps font theme]
       assert_equal expected_keys.sort, Hyperion::MenuFactory::ROUTES.keys.sort
     end
   end

@@ -22,7 +22,8 @@ module Applications
     def start
       return if running?
 
-      Process.spawn(launch_command, out: File::NULL, err: File::NULL)
+      pid = Process.spawn(launch_command, out: File::NULL, err: File::NULL)
+      Process.detach(pid)
     end
 
     def stop
@@ -32,12 +33,14 @@ module Applications
       status.success?
     end
 
-    def restart
+    def restart(max_wait: 2)
       stop
-      10.times do
-        break unless running?
-
-        sleep 0.1
+      delay = 0.01
+      waited = 0.0
+      while waited < max_wait && running?
+        sleep delay
+        waited += delay
+        delay = [delay * 2, 0.5].min # cap at 500ms
       end
       start
     end

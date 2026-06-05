@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require_relative 'waybar'
+require_relative 'hypridle'
+
 module Applications
   # External applications management
-  class Applications
+  class Registry
     def initialize; end
 
     def all

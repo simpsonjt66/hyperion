@@ -6,8 +6,6 @@ require 'open3'
 module Applications
   # Base class for applications.
   class Base
-    def initialize; end
-
     def name
       raise NotImplementedError, "#{self.class} must implement #name"
     end
@@ -17,7 +15,7 @@ module Applications
     end
 
     def running?
-      _stdout, _stderr, status = Open3.capture3("pgrep -x #{name}")
+      _stdout, _stderr, status = Open3.capture3('pgrep', '-x', name)
       status.success?
     end
 
@@ -28,15 +26,19 @@ module Applications
     end
 
     def stop
-      return unless running?
+      return false unless running?
 
-      _stdout, _stderr, status = Open3.capture3("pkill -x #{name}")
+      _stdout, _stderr, status = Open3.capture3('pkill', '-x', name)
       status.success?
     end
 
     def restart
       stop
-      sleep 1
+      10.times do
+        break unless running?
+
+        sleep 0.1
+      end
       start
     end
   end

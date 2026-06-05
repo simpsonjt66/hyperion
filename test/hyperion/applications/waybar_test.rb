@@ -6,7 +6,7 @@ require 'hyperion/applications/waybar'
 describe Applications::Waybar do
   let(:waybar) { Applications::Waybar.new }
 
-  it 'initiializes with new' do
+  it 'initializes with new' do
     assert_instance_of Applications::Waybar, waybar
   end
 

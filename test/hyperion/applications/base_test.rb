@@ -41,7 +41,10 @@ describe Applications::Base do
     it 'spawns the process if not already running' do
       spawn_called = false
       app.stub :running?, false do
-        Process.stub :spawn, ->(_cmd, _opts) { spawn_called = true; 123 } do
+        Process.stub :spawn, lambda { |_cmd, _opts|
+          spawn_called = true
+          123
+        } do
           app.start
         end
       end
@@ -51,7 +54,10 @@ describe Applications::Base do
     it 'does nothing if already running' do
       spawn_called = false
       app.stub :running?, true do
-        Process.stub :spawn, ->(_cmd, _opts) { spawn_called = true; 123 } do
+        Process.stub :spawn, lambda { |_cmd, _opts|
+          spawn_called = true
+          123
+        } do
           app.start
         end
       end
@@ -65,8 +71,8 @@ describe Applications::Base do
       fake_status.expect :success?, true
 
       app.stub :running?, true do
-        Open3.stub :capture3, ->(cmd) {
-          assert_equal 'pkill -x mockapp', cmd
+        Open3.stub :capture3, lambda { |*args|
+          assert_equal %w[pkill -x mockapp], args
           ['', '', fake_status]
         } do
           assert app.stop
@@ -75,10 +81,15 @@ describe Applications::Base do
     end
 
     it 'does nothing if not running' do
+      spawn_called = false
       app.stub :running?, false do
-        # If capture3 is called, the test will fail because we didn't stub it inside the block
-        # or we can explicitly assert it's not called.
-        app.stop
+        Process.stub :spawn, lambda { |_cmd, _opts|
+          spawn_called = true
+          123
+        } do
+          app.stop
+        end
+        refute spawn_called
       end
     end
   end
@@ -86,11 +97,13 @@ describe Applications::Base do
   describe '#restart' do
     it 'stops and then starts the application' do
       actions = []
-      app.stub :stop, -> { actions << :stop } do
-        app.stub :start, -> { actions << :start } do
-          # Stub sleep to keep tests fast
-          app.stub :sleep, nil do
-            app.restart
+      app.stub :running?, false do
+        app.stub :stop, -> { actions << :stop } do
+          app.stub :start, -> { actions << :start } do
+            # Stub sleep to keep tests fast
+            app.stub :sleep, nil do
+              app.restart
+            end
           end
         end
       end

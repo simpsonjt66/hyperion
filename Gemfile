@@ -6,8 +6,8 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'irb'
-gem 'rake', '~> 13.0'
+gem 'rake', '13.4.2'
 
-gem 'minitest', '~> 5.16'
+gem 'minitest', '5.27.0'
 gem 'minitest-mock', '5.27'
 gem 'toml-rb', '4.2'

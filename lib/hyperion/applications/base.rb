@@ -22,7 +22,8 @@ module Applications
     def start
       return if running?
 
-      Process.spawn(launch_command, out: File::NULL, err: File::NULL)
+      pid = Process.spawn(launch_command, out: File::NULL, err: File::NULL)
+      Process.detach(pid)
     end
 
     def stop

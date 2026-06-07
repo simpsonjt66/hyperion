@@ -1,64 +1,95 @@
 # Hyperion
 
-TODO: Delete this and the text below, and describe your gem
+Hyperion is a specialized menu system and desktop management tool designed for Linux environments, with a primary focus on Hyprland. Built in Ruby, it leverages `rofi` as a user interface to provide a centralized, keyboard-driven workflow for system control, configuration management, and theming.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be
-able to package up your Ruby library into a gem. Put your Ruby code in the file
-`lib/hyperion`. To experiment with that code, run `bin/console` for an
-interactive prompt.
+This is a personal project designed for a specific workflow, but it is structured as an open-source tool.
+
+## Key Features
+
+- **Centralized Launcher**: Access system tools, applications, and configurations from a single `rofi` interface.
+- **Dynamic Theming**: Seamlessly switch between themes. Hyperion manages the synchronization of styles across multiple applications (e.g., Alacritty, Waybar, Hyprland, Kitty) using a template-based system.
+- **Application Control**: A built-in registry to manage the lifecycle (start/stop/status) of desktop services like `waybar`, `hypridle`, and `hyprsunset`.
+- **Configuration Hub**: Quickly open and edit configuration files for various system tools without navigating the filesystem.
+- **System Actions**: Standardized interface for power management (reboot, shutdown, logout, lock).
+- **Extensible Architecture**: Built on a decoupled Coordinator Pattern, making it easy to add new menus or swap out the UI adapter.
+
+## Core Architecture
+
+Hyperion follows the **Coordinator Pattern** to ensure high decoupling between logic and presentation:
+
+- **Navigator**: The engine that manages the menu stack and handles transitions between routes.
+- **MenuFactory**: The central registry for all routes, responsible for instantiating menus with their required dependencies.
+- **Menus**: Individual logic units that handle user input and decide on the next action (`:push`, `:back`, `:exit`).
+- **View Adapter**: An abstraction layer over the UI. Currently, it implements a `RofiAdapter`, but the architecture allows for swapping this with `fzf`, `gum`, or a GUI.
+- **Utilities**: A collection of tools for theme management, file manipulation, and process control.
+
+## Project Structure
+
+```text
+├── bin/                # Entry point script (hyperion.rb)
+├── lib/                # Core library logic
+│   ├── hyperion/
+│   │   ├── applications/  # External app definitions
+│   │   ├── menus/         # Menu logic classes
+│   │   ├── utilities/     # Helper modules (Theming, Font management, etc.)
+│   │   └── view/          # UI Adapters (Rofi)
+├── config/             # Default configuration files
+├── templates/          # Application config templates (.tpl)
+├── themes/             # Theme definitions and assets
+└── install.sh          # Installation script
+```
 
 ## Installation
 
-TODO: Replace
-`UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your
-gem name right after releasing it to RubyGems.org. Please do not do it earlier
-due to security reasons. Alternatively, replace this section with instructions
-to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
+The project includes an `install.sh` script to set up the necessary directories and sync assets.
 
 ```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+# Clone the repository
+git clone https://github.com/yourusername/hyperion.git
+cd hyperion
+
+# Run the installation script
+./install.sh
+
+# Ensure you have the required dependencies (Ruby 3.2+, rofi, etc.)
+bundle install
 ```
 
-If bundler is not being used to manage dependencies, install the gem by
-executing:
-
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-```
+The installer provisions:
+- Config: `~/.config/hyperion/config.yaml`
+- Templates: `~/.local/share/hyperion/templates/`
+- Themes: `~/.local/share/hyperion/themes/`
 
 ## Usage
 
-TODO: Write usage instructions here
+Run the main menu:
+```bash
+bundle exec ruby bin/hyperion.rb
+```
+
+Launch a specific route directly:
+```bash
+bundle exec ruby bin/hyperion.rb system
+```
+
+## Configuration
+
+The primary configuration is managed in `~/.config/hyperion/config.yaml`. This file defines the menu structure, prompts, and the commands executed by various launchers.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run
-`rake test` to run the tests. You can also run `bin/console` for an interactive
-prompt that will allow you to experiment.
+Hyperion is built with testability in mind.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To
-release a new version, update the version number in `version.rb`, and then run
-`bundle exec rake release`, which will create a git tag for the version, push
-git commits and the created tag, and push the `.gem` file to
-[rubygems.org](https://rubygems.org).
+### Running Tests
+```bash
+bundle exec rake test
+```
 
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at
-<https://github.com/simpsonjt66/hyperion>. This project is intended to be a
-safe, welcoming space for collaboration, and contributors are expected to adhere
-to the
-[code of conduct](https://github.com/simpsonjt66/hyperion/blob/main/CODE_OF_CONDUCT.md).
+### Adding a New Menu
+1. Define the route in `lib/hyperion/menu_factory.rb`.
+2. Create the menu class in `lib/hyperion/menus/` (inheriting from `Base`, `PushMenu`, or `Launcher`).
+3. (Optional) Add the configuration section in `config/config.yaml`.
 
 ## License
 
-The gem is available as open source under the terms of the
-[MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Hyperion project's codebases, issue trackers, chat
-rooms and mailing lists is expected to follow the
-[code of conduct](https://github.com/simpsonjt66/hyperion/blob/main/CODE_OF_CONDUCT.md).
+MIT

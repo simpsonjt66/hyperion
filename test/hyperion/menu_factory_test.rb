@@ -91,7 +91,7 @@ describe Hyperion::MenuFactory do
     end
 
     it 'contains expected keys' do
-      expected_keys = %i[main system config package default editor browser screenshot terminal apps font theme]
+      expected_keys = %i[main system config package default editor browser screenshot terminal apps font theme toggle]
       assert_equal expected_keys.sort, Hyperion::MenuFactory::ROUTES.keys.sort
     end
   end

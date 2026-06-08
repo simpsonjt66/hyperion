@@ -9,6 +9,7 @@ require 'toml-rb'
 require_relative 'hyperion/version'
 require_relative 'hyperion/utilities'
 require_relative 'hyperion/view/rofi_adapter'
+require_relative 'hyperion/applications/registry'
 
 # Load all utilities
 Dir.glob(File.join(__dir__, 'hyperion/utilities', '*.rb')).sort.each { |f| require f }

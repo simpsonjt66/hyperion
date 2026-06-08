@@ -19,6 +19,16 @@ module Applications
       status.success?
     end
 
+    def toggle
+      if running?
+        stop
+        :stopped
+      else
+        start
+        :started
+      end
+    end
+
     def start
       return if running?
 
@@ -33,14 +43,14 @@ module Applications
       status.success?
     end
 
-    def restart(max_wait: 2)
+    def restart(max_wait: 2.0)
       stop
       delay = 0.01
       waited = 0.0
       while waited < max_wait && running?
         sleep delay
         waited += delay
-        delay = [delay * 2, 0.5].min # cap at 500ms
+        delay = [delay * 2, 0.5].min
       end
       start
     end

@@ -36,7 +36,15 @@ module Hyperion
                 else
                   []
                 end
-      config[:class].new(options: options, view: view)
+
+      extra = {}
+      if route == :theme
+        repo = ::Utilities::ThemeRepository.new
+        extra[:theme_repository] = repo
+        extra[:theme_set] = ::Utilities::ThemeSet.new(theme_repository: repo)
+      end
+
+      config[:class].new(options: options, view: view, **extra)
     end
   end
 end

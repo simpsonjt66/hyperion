@@ -1,56 +1,53 @@
 # frozen_string_literal: true
 
 module Utilities
-  # Set's the current system theme
+  # Orchestrates the theme application process
   class ThemeSet
-    NEXT_THEME_PATH = File.join(HYPERION_PATH, 'next_theme')
+    attr_reader :applications
 
-    def self.call(new_current_theme)
-      new_theme_path = File.join(THEME_PATH, new_current_theme)
-      new_theme_files = File.join(new_theme_path, '/.')
-      apply_theme(new_current_theme, new_theme_files)
-      Restart.kitty
-      Restart.waybar
+    def initialize(
+      applications: {
+        waybar: Applications::Waybar.new,
+        kitty: Applications::Kitty.new,
+        nvim: Applications::Nvim.new
+      },
+      theme_repository: ThemeRepository.new,
+      theme_deployer: ThemeDeployer.new,
+      theme_path: THEME_PATH,
+      color_extractor: ->(path) { ColorFileFromAlacritty.new(path) },
+      template_builder: ->(path) { ThemeSetTemplate.new(path) }
+    )
+      @applications = applications
+      @theme_repository = theme_repository
+      @theme_deployer = theme_deployer
+      @theme_path = theme_path
+      @color_extractor = color_extractor
+      @template_builder = template_builder
     end
-    class << self
-      private
 
-      def remove_current_theme_dir
-        FileUtils.rm_rf(CURRENT_THEME_PATH)
-      end
+    def call(theme_name)
+      source_path = File.join(@theme_path, theme_name)
+      staging_path = @theme_deployer.staging_path
 
-      def recreate_next_theme_dir
-        FileUtils.rm_rf(NEXT_THEME_PATH) if File.exist?(NEXT_THEME_PATH)
-        FileUtils.mkdir_p(NEXT_THEME_PATH)
-      end
+      @theme_deployer.prepare_staging(source_path)
 
-      def move_next_to_current
-        FileUtils.mv(NEXT_THEME_PATH, CURRENT_THEME_PATH)
-      end
+      process_assets(staging_path)
 
-      def apply_theme(new_current_theme, new_theme_files)
-        recreate_next_theme_dir
-        copy_theme_files(new_theme_files)
+      @theme_deployer.publish
+      @theme_repository.current = theme_name
+      reload_configs
+    end
 
-        unless File.exist?(File.join(NEXT_THEME_PATH, 'colors.toml'))
-          ColorFileFromAlacritty.new(NEXT_THEME_PATH).extract
-        end
+    private
 
-        ThemeSetTemplate.new(NEXT_THEME_PATH).build_config_files
+    def process_assets(staging_path)
+      @color_extractor.call(staging_path).extract unless File.exist?(File.join(staging_path, 'colors.toml'))
 
-        remove_current_theme_dir
-        move_next_to_current
-        write_theme_marker(new_current_theme)
-      end
+      @template_builder.call(staging_path).build_config_files
+    end
 
-      def write_theme_marker(new_current_theme)
-        current_path = File.join(HYPERION_PATH, 'current')
-        File.write(File.join(current_path, 'theme.current'), new_current_theme)
-      end
-
-      def copy_theme_files(new_theme_files)
-        FileUtils.cp_r(new_theme_files, NEXT_THEME_PATH)
-      end
+    def reload_configs
+      @applications.each_value(&:reload_config)
     end
   end
 end

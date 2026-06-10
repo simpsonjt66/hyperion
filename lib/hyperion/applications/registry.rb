@@ -3,6 +3,8 @@
 require_relative 'waybar'
 require_relative 'hypridle'
 require_relative 'hyprsunset'
+require_relative 'kitty'
+require_relative 'nvim'
 
 module Applications
   # External applications management

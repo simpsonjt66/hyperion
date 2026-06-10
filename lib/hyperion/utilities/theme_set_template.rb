@@ -31,11 +31,10 @@ module Utilities
 
   # Orchestrates the building of the theme files
   class ThemeSetTemplate
-    TEMPLATES_PATH = File.join(HYPERION_PATH, 'templates').freeze
-    NEXT_THEME_PATH = File.join(HYPERION_PATH, 'next_theme').freeze
-
-    def initialize(theme_dir)
-      @colors_file = File.join(theme_dir, 'colors.toml')
+    def initialize(staging_path, templates_path: TEMPLATES_PATH)
+      @staging_path = staging_path
+      @colors_file = File.join(staging_path, 'colors.toml')
+      @templates_path = templates_path
     end
 
     def build_config_files
@@ -46,8 +45,8 @@ module Utilities
       subs = ColorTransformer.substitutions_for(colors)
       renderer = TemplateRenderer.new(subs)
 
-      Dir.glob(File.join(TEMPLATES_PATH, '*.tpl')).each do |tpl_path|
-        output_path = File.join(NEXT_THEME_PATH, File.basename(tpl_path, '.tpl'))
+      Dir.glob(File.join(@templates_path, '*.tpl')).each do |tpl_path|
+        output_path = File.join(@staging_path, File.basename(tpl_path, '.tpl'))
 
         next if File.exist?(output_path)
 

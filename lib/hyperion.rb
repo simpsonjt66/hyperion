@@ -7,6 +7,7 @@ require 'fileutils'
 require 'toml-rb'
 
 require_relative 'hyperion/version'
+require_relative 'hyperion/environment'
 require_relative 'hyperion/utilities'
 require_relative 'hyperion/view/rofi_adapter'
 require_relative 'hyperion/applications/registry'

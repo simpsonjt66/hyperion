@@ -6,6 +6,10 @@ require 'open3'
 module Applications
   # Base class for applications.
   class Base
+    def initialize(theme_repository: nil)
+      @theme_repository = theme_repository
+    end
+
     def name
       raise NotImplementedError, "#{self.class} must implement #name"
     end

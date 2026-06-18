@@ -7,19 +7,28 @@ module Hyperion
   class MenuFactory
     # Mapping of route symbols to their respective menu classes and config keys
 
-    ROUTES = { main: { class: ::Menus::Main, options_key: :main_menu },
-               system: { class: ::Menus::System, options_key: :system_menu },
-               config: { class: ::Menus::Config, options_key: :config_menu },
-               package: { class: ::Menus::Package, options_key: :package_menu },
-               default: { class: ::Menus::Default, options_key: :default_menu },
-               editor: { class: ::Menus::Editor, options_key: :default_editor_menu },
-               browser: { class: ::Menus::Browser, options_key: :default_browser_menu },
-               terminal: { class: ::Menus::Terminal, options_key: :default_terminal_menu },
-               apps: { class: ::Menus::Apps, options_key: nil },
-               font: { class: ::Menus::Font, options_key: nil },
-               screenshot: { class: ::Menus::Screenshot, options_key: :screenshot_menu },
-               toggle: { class: ::Menus::Toggle, options_key: nil },
-               theme: { class: ::Menus::Theme, options_key: nil } }.freeze
+    ROUTES = {
+      main: { class: ::Menus::Main, options_key: :main_menu },
+      system: { class: ::Menus::System, options_key: :system_menu },
+      config: { class: ::Menus::Config, options_key: :config_menu },
+      package: { class: ::Menus::Package, options_key: :package_menu },
+      default: { class: ::Menus::Default, options_key: :default_menu },
+      editor: { class: ::Menus::Editor, options_key: :default_editor_menu },
+      browser: { class: ::Menus::Browser, options_key: :default_browser_menu },
+      terminal: { class: ::Menus::Terminal, options_key: :default_terminal_menu },
+      apps: { class: ::Menus::Apps, options_key: nil },
+      font: { class: ::Menus::Font, options_key: nil },
+      screenshot: { class: ::Menus::Screenshot, options_key: :screenshot_menu },
+      toggle: { class: ::Menus::Toggle, options_key: nil },
+      theme: {
+        class: ::Menus::Theme,
+        options_key: nil,
+        factory: lambda {
+          repo = ::Utilities::ThemeRepository.new
+          { theme_repository: repo, theme_set: ::Utilities::ThemeSet.new(theme_repository: repo) }
+        }
+      }
+    }.freeze
 
     # Builds a menu instance for the given route
     # @param route [Symbol] The route identifier (e.g., :main, :system)
@@ -37,12 +46,7 @@ module Hyperion
                   []
                 end
 
-      extra = {}
-      if route == :theme
-        repo = ::Utilities::ThemeRepository.new
-        extra[:theme_repository] = repo
-        extra[:theme_set] = ::Utilities::ThemeSet.new(theme_repository: repo)
-      end
+      extra = config[:factory] ? config[:factory].call : {}
 
       config[:class].new(options: options, view: view, **extra)
     end

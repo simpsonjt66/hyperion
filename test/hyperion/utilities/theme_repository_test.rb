@@ -12,6 +12,8 @@ describe Utilities::ThemeRepository do
     FileUtils.mkdir_p(@theme_path)
     FileUtils.mkdir_p(File.join(@theme_path, 'catppuccin'))
     FileUtils.mkdir_p(File.join(@theme_path, 'tokyo-night'))
+    FileUtils.mkdir_p(File.join(@theme_path, 'flexoki-light'))
+    FileUtils.mkdir_p(File.join(@theme_path, 'matte-black'))
   end
 
   after do
@@ -24,6 +26,8 @@ describe Utilities::ThemeRepository do
     it 'returns a hash of human-readable names to directory names' do
       expected = {
         'Catppuccin' => 'catppuccin',
+        'Flexoki Light' => 'flexoki-light',
+        'Matte Black' => 'matte-black',
         'Tokyo Night' => 'tokyo-night'
       }
       assert_equal expected, repository.all

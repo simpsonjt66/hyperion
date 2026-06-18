@@ -4,13 +4,13 @@ require 'test_helper'
 require 'hyperion/environment'
 
 describe Utilities do
-  let(:data_path) { File.expand_path('~/.local/share') }
+  let(:data_path) { ENV['XDG_DATA_HOME'] || File.join(Dir.home, '.local', 'share') }
   let(:hyperion_path) { File.join(data_path, 'hyperion') }
   let(:theme_path) { File.join(hyperion_path, 'themes') }
   let(:current_theme_path) { File.join(hyperion_path, 'current', 'theme') }
   let(:next_theme_path) { File.join(hyperion_path, 'next_theme') }
   let(:templates_path) { File.join(hyperion_path, 'templates') }
-  let(:config_path) { File.join(Dir.home, '.config') }
+  let(:config_path) { ENV['XDG_CONFIG_HOME'] || File.join(Dir.home, '.config') }
 
   it 'defines the correct contstants' do
     _(Utilities::DATA_PATH).must_equal data_path
